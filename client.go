@@ -50,10 +50,6 @@ func (c *Client) handlePacket(p Packet) error {
 		})
 	case SubmitJobBg:
 		return nil
-	case GrabJob:
-		return nil
-	case GrabJobUniq:
-		return nil
 	default:
 		return fmt.Errorf("unsupported or invalid type for client %d", p.Type)
 	}
