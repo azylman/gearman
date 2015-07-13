@@ -64,6 +64,7 @@ func (s *Server) handle(conn net.Conn) error {
 		name := string(p.Data)
 		w := &Worker{conn: conn, name: name, s: s}
 		s.workers.Add(name, w)
+		defer s.workers.Remove(name, w)
 		return w.handle(scanner)
 	case SubmitJob, SubmitJobBg:
 		c := &Client{conn: conn, s: s}
@@ -101,6 +102,22 @@ func (w *Workers) Add(name string, worker *Worker) {
 	}
 	w.workers[name] = append(w.workers[name], worker)
 	w.Unlock()
+}
+
+func (w *Workers) Remove(name string, worker *Worker) {
+	w.Lock()
+	defer w.Unlock()
+	if w.workers[name] == nil {
+		panic(fmt.Errorf("workers for %s is undefiend", name))
+	}
+	new := []*Worker{}
+	for _, w := range w.workers[name] {
+		if w != worker {
+			new = append(new, w)
+		}
+	}
+	w.workers[name] = new
+	// TODO: If worker was working on a job, should be put back in the queue
 }
 
 func (w *Workers) Wake(name string) error {
