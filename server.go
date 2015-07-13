@@ -68,6 +68,12 @@ func (s *Server) handle(conn net.Conn) error {
 		return w.handle(scanner)
 	case SubmitJob, SubmitJobBg:
 		c := &Client{conn: conn, s: s}
+		defer func() {
+			// TODO: If the client disconnects and is referenced by any jobs, decide what to do.
+			// Gearman deletes them unless they're already being worked on, in which case they're
+			// treated as background jobs.
+			// If that's hard, then just turn them all into background jobs.
+		}()
 		return c.handle(p, scanner)
 	default:
 		return fmt.Errorf("unable to infer connection type from packet type %d", p.Type)
