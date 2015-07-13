@@ -48,8 +48,6 @@ func (c *Client) handlePacket(p Packet) error {
 			Type: JobCreated,
 			Data: []byte(handle),
 		})
-	case SubmitJobBg:
-		return nil
 	default:
 		return fmt.Errorf("unsupported or invalid type for client %d", p.Type)
 	}

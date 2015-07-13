@@ -48,8 +48,6 @@ func (w *Worker) handlePacket(p Packet) error {
 	case PreSleep:
 		w.Sleep()
 		return nil
-	case GrabJob:
-		return nil
 	case GrabJobUniq:
 		j := w.s.jobs.Get(w.name)
 		var resp *Packet
