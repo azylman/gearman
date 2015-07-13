@@ -65,6 +65,8 @@ func (w *Worker) handlePacket(p Packet) error {
 		}
 		return w.sendPacket(resp)
 	case WorkData, WorkWarning, WorkComplete, WorkFail:
+		// Send this Req as a Res to the client
+		p.Code = Res
 		if w.job == nil {
 			log.Printf("worker %s received packet %d when not working", w.name, p.Type)
 			return nil

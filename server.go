@@ -32,6 +32,7 @@ func (s *Server) Listen(laddr string) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("Listening on %s", laddr)
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
